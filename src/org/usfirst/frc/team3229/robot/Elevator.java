@@ -11,7 +11,7 @@ public class Elevator extends Command {
 
 	protected void execute() {
 		// TODO Auto-generated method stub
-
+   
 	}
 
 	protected boolean isFinished() {

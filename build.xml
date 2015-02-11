@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="FRC Deployment" default="deploy">  
-	
+<project name="FRC Deployment" default="deploy">
+
   <!--
   The following properties can be defined to override system level
   settings. These should not be touched unless you know what you're
@@ -25,6 +25,6 @@
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
   
-  <import file="${user.home}/wpilib/java/current/ant/build.xml"/>  <!-- If you get errors on this line, locate your bild.xml file and replace the path-->
+  <import file="${wpilib.ant.dir}/build.xml"/>
 
 </project> 
