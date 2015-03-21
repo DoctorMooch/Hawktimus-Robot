@@ -15,43 +15,42 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends SampleRobot {
 	
     RobotDrive robotDrive;
+    
     Joystick stick;
+    
+    //********SPEED CONTROLLERS*****
     SpeedController elevatorMotor;
     SpeedController FrontRight;
     SpeedController BackRight;
     SpeedController FrontLeft;
     SpeedController BackLeft;
+    
     // Channels for the wheels
-    final int frontLeftChannel	= 3;       //originally 3
-    final int rearLeftChannel	= 4;       //originally 4
-    final int frontRightChannel	= 2;       //originally 2
-    final int rearRightChannel	= 1;       //originally 1
+    final int frontLeftChannel	= 3;       
+    final int rearLeftChannel	= 4;       
+    final int frontRightChannel	= 2;       
+    final int rearRightChannel	= 1;       
     final int elevator = 6;
-    private static final int LIFT_BUTTON=2; //or whatever button raises
-    private static final int LOWER_BUTTON=1; //or whatever button lowers
+    
+    //******BUTTONS FOR LIFTERS********
+    private static final int LIFT_BUTTON=2; //Button to raise elevator
+    private static final int LOWER_BUTTON=1; //Button to lower elevator
 
     
     // The channel on the driver station that the joystick is connected to
     final int joystickChannel	= 0;
-    double rotationDirection;
 
     public Robot() {
         robotDrive = new RobotDrive(frontLeftChannel, rearLeftChannel, frontRightChannel, rearRightChannel);
-        robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);	// invert the left side motors
+        robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);	
     	robotDrive.setInvertedMotor(MotorType.kFrontRight, true);
         robotDrive.setExpiration(0.1);
 
        stick = new Joystick(joystickChannel);
        elevatorMotor=new Jaguar(elevator);
-   
-       
-       
     }
-        
-
-    /**
-     * Runs the motors with Mecanum drive.
-     */
+    
+    //***************START OF AUTONOMOUS****************
     public void autonomous(){
     	
     	for(int i = 0; i < 400; i++){
@@ -69,6 +68,7 @@ public class Robot extends SampleRobot {
     	}
     	
     }
+    //***************************************************
     
     public void operatorControl() {
         robotDrive.setSafetyEnabled(true);
@@ -85,20 +85,28 @@ public class Robot extends SampleRobot {
             System.out.println(stick.getRawAxis(3));
           //*****************************************
             
-        double RotateStuff = 0;
+        double RotateStuff = 0;  //we know that the code is run continuously on the robot, does that mean
+        //that this line ^ get run every iteration?  If so, it will always be reset to 0 even after the
+        //if statements below change the value. 
         		
-         //
-         if (-stick.getRawAxis(2) + stick.getRawAxis(3)>0 & RotateStuff == 0){
-          	  robotDrive.setInvertedMotor(MotorType.kFrontLeft, false);
-          	  robotDrive.setInvertedMotor(MotorType.kFrontRight, false);																// invert the left side motors
+         //****************START OF ROTATION CODE***********************
+        
+        //*****************RIGHT TRIGGER*********************
+         if (-stick.getRawAxis(2) + stick.getRawAxis(3)>0 && RotateStuff == 0){
+          robotDrive.setInvertedMotor(MotorType.kFrontRight, true);  
+       	  robotDrive.setInvertedMotor(MotorType.kFrontLeft, false);
+       	  robotDrive.setInvertedMotor(MotorType.kRearLeft, false);	
+       	robotDrive.setInvertedMotor(MotorType.kRearRight, false); //***IF RIGHT TWIST NOT WORKING TRY, CHANGING TO TRUE***
             RotateStuff= 1;
           }
           
-        if (-stick.getRawAxis(2) + stick.getRawAxis(3)<0 & RotateStuff==0){
+         //*******************LEFT TRIGGER*********************
+        if (-stick.getRawAxis(2) + stick.getRawAxis(3)<0 && RotateStuff==0){
         	  	// invert the left side motors
-        	  robotDrive.setInvertedMotor(MotorType.kFrontRight, false);
+        	  robotDrive.setInvertedMotor(MotorType.kFrontRight, false);  
         	  robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);
         	  robotDrive.setInvertedMotor(MotorType.kRearLeft, true);
+        	  robotDrive.setInvertedMotor(MotorType.kRearRight, true); //***IF LEFT TWIST NOT WORKING, TRY CHANGING TO FALSE***
         	  RotateStuff = 2;
           }
         /* Basic Movement Code */robotDrive.mecanumDrive_Cartesian(-0.8 * stick.getY(), -0.8 * stick.getX(), -0.8 * stick.getRawAxis(2) + 0.8 * stick.getRawAxis(3), 1);
@@ -114,11 +122,16 @@ public class Robot extends SampleRobot {
         	 
         	  RotateStuff = 0;
           }*/
+        
+        /*^^^^^^^^FOR LINES 112-122^^^^^^^^^^^ 
+         I'm not sure what that code is for, however, if the normal drive is now 
+         malfunctioning (Strafe, drive forward/backwards, i think we need to insert a default
+         "else" statement that simply resets the motors to be normal when the triggers are added
+         together give a value of 0 (AKA Neither/both are pressed).  This will ensure that when the
+         triggers are not being used, the motors are given the default attributes as if we never 
+         twisted in the first place.*/
 
-          robotDrive.setInvertedMotor(MotorType.kFrontLeft, true);	// invert the left side motors
-      	  robotDrive.setInvertedMotor(MotorType.kFrontRight, true);
-      	  robotDrive.setInvertedMotor(MotorType.kRearLeft, false);	// invert the left side motors
-    	  robotDrive.setInvertedMotor(MotorType.kRearRight, false);
+    	  
          //***************START OF ELEVATOR CODE********************** 
             if(stick.getRawButton(LIFT_BUTTON)) {
                 elevatorMotor.set(0.5);
