@@ -142,7 +142,7 @@ public class Robot extends SampleRobot {
            }
           //**********************************************************   
             
-            Timer.delay(0.010);	// wait 5ms to avoid hogging CPU cycles
+            Timer.delay(0.010);	// wait 10ms to avoid hogging CPU cycles
         }
     }
 
